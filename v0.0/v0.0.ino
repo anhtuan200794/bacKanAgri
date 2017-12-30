@@ -6,12 +6,16 @@
 #define WIFI_AP "VNPT"
 #define WIFI_PASSWORD "12345689"
 
-#define DHTPIN 2
+#define DHTPIN 14
 #define DHTTYPE DHT22
 
 #define D1 5
 #define D2 4
-#define D3 0
+#define D3 12
+//#define LED_BUILTIN 2
+
+//#define GPIO0_PIN 3
+// #define GPIO2_PIN 5
 
 DHT dht(DHTPIN, DHTTYPE);
 char thingsboardServer[] = "thienha.net";
@@ -27,25 +31,33 @@ boolean gpioState[] = {false, false};
 
 void setup() {
   Serial.begin(115200);
-  
-  // Set output mode for all GPIO pins
-  pinMode(D1, OUTPUT);
-  pinMode(D2, OUTPUT);
-  pinMode(D3, OUTPUT);
-  //pinMode(D4, OUTPUT);
   delay(10);
   InitWiFi();
   dht.begin();
   client.setServer( thingsboardServer, 1883 );
   client.setCallback(on_message);
+  pinMode(D1, OUTPUT);
+  pinMode(D2, OUTPUT);
+  pinMode(D3, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(D1, HIGH);
+  digitalWrite(D2, HIGH);
+  digitalWrite(D3, HIGH);
+  digitalWrite(LED_BUILTIN, HIGH);
+  
 }
 
 void loop() {
   if ( !client.connected() ) {
+    digitalWrite(LED_BUILTIN, LOW);
     reconnect();
   }
+  digitalWrite(LED_BUILTIN, HIGH);
   if ( millis() - lastSend > 1000 ) { // Update and send only after 1 seconds
     getAndSendTemperatureAndHumidityData();
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+    digitalWrite(LED_BUILTIN, HIGH);
     lastSend = millis();
   }
   client.loop();
@@ -75,7 +87,6 @@ void getAndSendTemperatureAndHumidityData()
 
   String temperature = String(t);
   String humidity = String(h);
-
 
   // Just debug messages
 //  Serial.println( "Sending temperature and humidity : [" );
@@ -119,23 +130,7 @@ void on_message(const char* topic, byte* payload, unsigned int length) {
     Serial.println("parseObject() failed");
     return;
   }
-
-  // Check request method
-//  String methodName = String((const char*)data["method"]);
-//  
-//  String deviceName = String((const char*)data["device"])
-//  if (methodName.equals("getGpioStatus")) {
-//    // Reply with GPIO status
-//    String responseTopic = String(topic);
-//    responseTopic.replace("request", "response");
-//    client.publish(responseTopic.c_str(), get_gpio_status().c_str());
-//  } else if (methodName.equals("setGpioStatus")) {
-//    // Update GPIO status and reply
-
     set_gpio_status(data["device1"], data["device2"], data["device3"]);
-//    String responseTopic = String(topic);
-//    responseTopic.replace("request", "response");
-//    client.publish(responseTopic.c_str(), get_gpio_status().c_str());
     client.publish("devices/response", get_gpio_status().c_str());
 }
 
@@ -187,7 +182,6 @@ void set_gpio_status(bool dv1, bool dv2, bool dv3) {
     // Update GPIOs state
     gpioState[2] = dv3;
     }
-  
 }
 
 void InitWiFi() {
@@ -215,7 +209,7 @@ void reconnect() {
       }
       Serial.println("Connected to AP");
     }
-    Serial.print("Connecting to ThingsBoard node ...");
+    Serial.print("Connecting to Server node ...");
     // Attempt to connect (clientId, username, password)
     if ( client.connect("ESP_12", NULL, NULL) ) {
       Serial.println( "[DONE]" );
@@ -230,6 +224,7 @@ void reconnect() {
       Serial.print( "[FAILED] [ rc = " );
       Serial.print( client.state() );
       Serial.println( " : retrying in 5 seconds]" );
+      digitalWrite(LED_BUILTIN, LOW);
       // Wait 5 seconds before retrying
       delay( 5000 );
     }
