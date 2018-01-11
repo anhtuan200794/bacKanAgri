@@ -34,7 +34,7 @@ void setup() {
   delay(10);
   InitWiFi();
   dht.begin();
-  client.setServer( thingsboardServer, 1883 );
+  client.setServer( thingsboardServer, 8883 );
   client.setCallback(on_message);
   pinMode(D1, OUTPUT);
   pinMode(D2, OUTPUT);
@@ -103,7 +103,7 @@ void getAndSendTemperatureAndHumidityData()
   // Send payload
   char attributes[100];
   payload.toCharArray( attributes, 100 );
-  client.publish( "telemetry2", attributes );
+  client.publish( "admin/attributes", attributes );
   Serial.println( attributes );
 }
 
@@ -131,7 +131,7 @@ void on_message(const char* topic, byte* payload, unsigned int length) {
     return;
   }
     set_gpio_status(data["device1"], data["device2"], data["device3"]);
-    client.publish("devices/response", get_gpio_status().c_str());
+    client.publish("admin/response", get_gpio_status().c_str());
 }
 
 String get_gpio_status() {
@@ -211,12 +211,12 @@ void reconnect() {
     }
     Serial.print("Connecting to Server node ...");
     // Attempt to connect (clientId, username, password)
-    if ( client.connect("ESP_12", NULL, NULL) ) {
+    if ( client.connect("5a5643736c8e6e04bcefde99", "admin", NULL) ) {
       Serial.println( "[DONE]" );
       
       // Subscribing to receive RPC requests
       Serial.println("Subcribe !");
-      client.subscribe("devices/request");
+      client.subscribe("admin/request");
       // Sending current GPIO status
       //Serial.println("Sending current GPIO status ...");
       //client.publish("v1/devices/me/attributes", get_gpio_status().c_str());
