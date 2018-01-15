@@ -1,0 +1,40 @@
+Added Component: Designator=J1(JP3)
+Added Component: Designator=JP1(CON6)
+Added Component: Designator=NodeMCU-1(NodeMCU V1.0 ESP-12E)
+Added Pin To Net: NetName=NetJ1_1 Pin=J1-1
+Added Pin To Net: NetName=NetJ1_1 Pin=NodeMCU-1-3V3
+Added Pin To Net: NetName=NetJ1_1 Pin=NodeMCU-1-3V3
+Added Pin To Net: NetName=NetJ1_1 Pin=NodeMCU-1-3V3
+Added Net: Name=NetJ1_1
+Added Pin To Net: NetName=NetJ1_2 Pin=J1-2
+Added Pin To Net: NetName=NetJ1_2 Pin=NodeMCU-1-D1
+Added Net: Name=NetJ1_2
+Added Pin To Net: NetName=NetJ1_3 Pin=J1-3
+Added Pin To Net: NetName=NetJ1_3 Pin=NodeMCU-1-GND
+Added Pin To Net: NetName=NetJ1_3 Pin=NodeMCU-1-GND
+Added Pin To Net: NetName=NetJ1_3 Pin=NodeMCU-1-GND
+Added Pin To Net: NetName=NetJ1_3 Pin=NodeMCU-1-GND
+Added Net: Name=NetJ1_3
+Added Pin To Net: NetName=NetJP1_1 Pin=JP1-1
+Added Pin To Net: NetName=NetJP1_1 Pin=NodeMCU-1-D2
+Added Net: Name=NetJP1_1
+Added Pin To Net: NetName=NetJP1_2 Pin=JP1-2
+Added Pin To Net: NetName=NetJP1_2 Pin=NodeMCU-1-D5
+Added Net: Name=NetJP1_2
+Added Pin To Net: NetName=NetJP1_3 Pin=JP1-3
+Added Pin To Net: NetName=NetJP1_3 Pin=NodeMCU-1-D6
+Added Net: Name=NetJP1_3
+Added Pin To Net: NetName=NetJP1_4 Pin=JP1-4
+Added Pin To Net: NetName=NetJP1_4 Pin=NodeMCU-1-D7
+Added Net: Name=NetJP1_4
+Added Pin To Net: NetName=NetJP1_5 Pin=JP1-5
+Added Pin To Net: NetName=NetJP1_5 Pin=NodeMCU-1-GND
+Added Pin To Net: NetName=NetJP1_5 Pin=NodeMCU-1-GND
+Added Pin To Net: NetName=NetJP1_5 Pin=NodeMCU-1-GND
+Added Pin To Net: NetName=NetJP1_5 Pin=NodeMCU-1-GND
+Added Net: Name=NetJP1_5
+Added Pin To Net: NetName=NetJP1_6 Pin=JP1-6
+Added Pin To Net: NetName=NetJP1_6 Pin=NodeMCU-1-VIN
+Added Net: Name=NetJP1_6
+Added Class: Name=Sheet1
+Added Room: Name=Sheet1

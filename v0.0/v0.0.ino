@@ -3,15 +3,17 @@
 #include <ESP8266WiFi.h>
 #include "DHT.h"
 
-#define WIFI_AP "VNPT"
-#define WIFI_PASSWORD "12345689"
-
-#define DHTPIN 14
+#define WIFI_AP "VNPT"            // tên mạng wifi
+#define WIFI_PASSWORD "12345689"   // mật khẩu
+#define CLIENTID "5a5643736c8e6e04bcefde99" // vuon 1
+//#define CLIENTID "5a579a6b85520f07df6347e9"  //vuon 2
+#define DHTPIN 5
 #define DHTTYPE DHT22
 
-#define D1 5
-#define D2 4
+#define D1 4
+#define D2 14
 #define D3 12
+//#define D4 13
 //#define LED_BUILTIN 2
 
 //#define GPIO0_PIN 3
@@ -34,17 +36,19 @@ void setup() {
   delay(10);
   InitWiFi();
   dht.begin();
-  client.setServer( thingsboardServer, 8883 );
+  client.setServer( thingsboardServer, 1883 );
   client.setCallback(on_message);
   pinMode(D1, OUTPUT);
   pinMode(D2, OUTPUT);
   pinMode(D3, OUTPUT);
+  // pinMode(D4, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(D1, HIGH);
   digitalWrite(D2, HIGH);
   digitalWrite(D3, HIGH);
+  //digitalWrite(D4, HIGH);
   digitalWrite(LED_BUILTIN, HIGH);
-  
+
 }
 
 void loop() {
@@ -53,7 +57,7 @@ void loop() {
     reconnect();
   }
   digitalWrite(LED_BUILTIN, HIGH);
-  if ( millis() - lastSend > 1000 ) { // Update and send only after 1 seconds
+  if ( millis() - lastSend > 5000 ) { // Update and send only after 1 seconds
     getAndSendTemperatureAndHumidityData();
     digitalWrite(LED_BUILTIN, LOW);
     delay(100);
@@ -89,10 +93,10 @@ void getAndSendTemperatureAndHumidityData()
   String humidity = String(h);
 
   // Just debug messages
-//  Serial.println( "Sending temperature and humidity : [" );
-//  Serial.print( temperature ); Serial.print( "," );
-//  Serial.print( humidity );
-//  Serial.print( "]   -> " );
+  //  Serial.println( "Sending temperature and humidity : [" );
+  //  Serial.print( temperature ); Serial.print( "," );
+  //  Serial.print( humidity );
+  //  Serial.print( "]   -> " );
 
   // Prepare a JSON payload string
   String payload = "{";
@@ -130,8 +134,8 @@ void on_message(const char* topic, byte* payload, unsigned int length) {
     Serial.println("parseObject() failed");
     return;
   }
-    set_gpio_status(data["device1"], data["device2"], data["device3"]);
-    client.publish("admin/response", get_gpio_status().c_str());
+  set_gpio_status(data["device1"], data["device2"], data["device3"]);
+  client.publish("admin/response", get_gpio_status().c_str());
 }
 
 String get_gpio_status() {
@@ -141,6 +145,7 @@ String get_gpio_status() {
   data["device1"] = gpioState[0] ? true : false;
   data["device2"] = gpioState[1] ? true : false;
   data["device3"] = gpioState[2] ? true : false;
+  //data["device4"] = gpioState[2] ? true : false;
   char payload[256];
   data.printTo(payload, sizeof(payload));
   String strPayload = String(payload);
@@ -159,8 +164,8 @@ void set_gpio_status(bool dv1, bool dv2, bool dv3) {
     digitalWrite(D1, HIGH);
     // Update GPIOs state
     gpioState[0] = dv1;
-    }
-    
+  }
+
   if (dv2) {
     // Output GPIOs state
     digitalWrite(D2, LOW);
@@ -170,8 +175,8 @@ void set_gpio_status(bool dv1, bool dv2, bool dv3) {
     digitalWrite(D2, HIGH);
     // Update GPIOs state
     gpioState[1] = dv2;
-    }
-    
+  }
+
   if (dv3) {
     // Output GPIOs state
     digitalWrite(D3, LOW);
@@ -181,7 +186,17 @@ void set_gpio_status(bool dv1, bool dv2, bool dv3) {
     digitalWrite(D3, HIGH);
     // Update GPIOs state
     gpioState[2] = dv3;
-    }
+  }
+  //  if (dv4) {
+  //    // Output GPIOs state
+  //    digitalWrite(D4, LOW);
+  //    // Update GPIOs state
+  //    gpioState[3] = dv4;
+  //  } else {
+  //    digitalWrite(D4, HIGH);
+  //    // Update GPIOs state
+  //    gpioState[3] = dv4;
+  //    }
 }
 
 void InitWiFi() {
@@ -211,9 +226,9 @@ void reconnect() {
     }
     Serial.print("Connecting to Server node ...");
     // Attempt to connect (clientId, username, password)
-    if ( client.connect("5a5643736c8e6e04bcefde99", "admin", NULL) ) {
+    if ( client.connect(CLIENTID, "admin", NULL) ) {
       Serial.println( "[DONE]" );
-      
+
       // Subscribing to receive RPC requests
       Serial.println("Subcribe !");
       client.subscribe("admin/request");
@@ -230,3 +245,4 @@ void reconnect() {
     }
   }
 }
+
