@@ -3,12 +3,12 @@
 #include <ESP8266WiFi.h>
 #include "DHT.h"
 
-#define WIFI_AP "VNPT"            // tên mạng wifi
-#define WIFI_PASSWORD "12345689"   // mật khẩu
+#define WIFI_AP "TP-LINK_D2A1EA"            // tên mạng wifi
+#define WIFI_PASSWORD "244466666@2017"   // mật khẩu
 #define CLIENTID "5a5643736c8e6e04bcefde99" // vuon 1
 //#define CLIENTID "5a579a6b85520f07df6347e9"  //vuon 2
 #define DHTPIN 5
-#define DHTTYPE DHT22
+#define DHTTYPE DHT11
 
 #define D1 4
 #define D2 14
